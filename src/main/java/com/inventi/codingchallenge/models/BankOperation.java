@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.Locale;
+import java.util.Objects;
 
 public final class BankOperation {
     private String accountNumber;
@@ -26,6 +27,17 @@ public final class BankOperation {
         this.comment = comment;
         this.amount = amount;
         this.currency = currency;
+    }
+
+    public BankOperation(String csvRow)
+    {
+        String[] variables = csvRow.split(",");
+        accountNumber = variables[0].trim();
+        beneficiaryNumber = variables[1].trim();
+        date = LocalDateTime.parse(variables[2].trim(), dateFormatter);
+        comment = variables[3].trim();
+        amount =  new BigDecimal(variables[4].trim());
+        currency = CurrencyCode.valueOf(variables[5].trim());
     }
 
     public String toCSVRow()
@@ -90,5 +102,23 @@ public final class BankOperation {
 
     public void setCurrency(CurrencyCode currency) {
         this.currency = currency;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BankOperation that = (BankOperation) o;
+        return Objects.equals(getAccountNumber(), that.getAccountNumber()) &&
+                Objects.equals(getBeneficiaryNumber(), that.getBeneficiaryNumber()) &&
+                Objects.equals(getDate(), that.getDate()) &&
+                Objects.equals(getComment(), that.getComment()) &&
+                Objects.equals(getAmount(), that.getAmount()) &&
+                getCurrency() == that.getCurrency();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getAccountNumber(), getBeneficiaryNumber(), getDate(), getComment(), getAmount(), getCurrency());
     }
 }

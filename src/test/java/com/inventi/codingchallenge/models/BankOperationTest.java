@@ -20,4 +20,13 @@ class BankOperationTest {
         String rez = bo.toCSVRow();
         assertEquals("0, 1, 2020-12-01 00:00:00, 2, 1.25, EUR\n", rez);
     }
+
+    @Test
+    void fromCSVRow() {
+        BankOperation parsed = new BankOperation("0, 1, 2020-12-01 00:00:00, 2, 1.25, EUR\n");
+        BankOperation expected = new BankOperation("0", "1", LocalDateTime.of(2020,12,1,0,0), "2", new BigDecimal(1.25), CurrencyCode.EUR);
+
+        assertTrue(expected.equals(parsed));
+
+    }
 }

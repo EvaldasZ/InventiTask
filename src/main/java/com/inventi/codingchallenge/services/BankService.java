@@ -28,6 +28,24 @@ public final class BankService {
         for (BankOperation op: operations) {
             rez.append(op.toCSVRow());
         }
+        if(rez.length() > 1 && rez.charAt(rez.length() - 1) == '\n' && rez.charAt(rez.length() - 2) == ',')
+        {
+            rez.deleteCharAt(rez.length() - 1);
+            rez.deleteCharAt(rez.length() - 1);
+        }
         return rez.toString();
+    }
+
+    public void insertBankStatement(String bankOperationsString)
+    {
+        ArrayList<BankOperation> bankOperations = new ArrayList<>();
+        String[] operationStrings = bankOperationsString.split("\n");
+        for (String opString : operationStrings) {
+            if(!opString.equals(""))
+            {
+                bankOperations.add(new BankOperation(opString));
+            }
+        }
+        accountBalanceRepo.insertBankOperations(bankOperations);
     }
 }

@@ -29,4 +29,10 @@ public final class AccountBalanceController {
         }
         return bankService.getBankStatementCSV(accounts, fromDate, toDate);
     }
+
+    @PostMapping(value = "/statements")
+    public void postStatement(@RequestBody String csv)
+    {
+        bankService.insertBankStatement(csv);
+    }
 }

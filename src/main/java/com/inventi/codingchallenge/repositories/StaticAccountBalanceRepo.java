@@ -29,4 +29,6 @@ public final class StaticAccountBalanceRepo implements IAccountBalanceRepo {
         ArrayList<BankOperation> rez = new ArrayList<BankOperation>(list);
         return rez;
     }
+
+
 }
