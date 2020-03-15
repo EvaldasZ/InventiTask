@@ -19,7 +19,7 @@ public class CodingChallengeApplication {
 				"2",
 				LocalDateTime.of(2020, 11, 1, 0, 0),
 				"null",
-				new BigDecimal(1.1212),
+				new BigDecimal("1.1212"),
 				CurrencyCode.EUR));
 
 		SpringApplication.run(CodingChallengeApplication.class, args);

@@ -1,6 +1,7 @@
 package com.inventi.codingchallenge.services;
 
 import com.inventi.codingchallenge.models.BankOperation;
+import com.inventi.codingchallenge.models.CurrencyCode;
 import com.inventi.codingchallenge.repositories.IAccountBalanceRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +17,9 @@ import java.util.List;
 public final class BankService {
     @Autowired
     private IAccountBalanceRepo accountBalanceRepo;
+
+    @Autowired
+    private IForexService forexService;
 
     public BankService(IAccountBalanceRepo accountBalanceRepo)
     {
@@ -47,5 +52,23 @@ public final class BankService {
             }
         }
         accountBalanceRepo.insertBankOperations(bankOperations);
+    }
+
+    public BigDecimal getBalance(String account, LocalDateTime date) {
+        ArrayList<BankOperation> bankOperations = accountBalanceRepo.getOperationsForAccounts(Arrays.asList(account), null, date);
+        BigDecimal counter = new BigDecimal(0);
+        for (BankOperation bo : bankOperations) {
+            //BigDecimal rate = forexService.getHistoricalRate(bo.getCurrency(), CurrencyCode.EUR, date);
+            BigDecimal rate = new BigDecimal(1);
+            BigDecimal amt = bo.getAmount().multiply(rate);
+            if(account.equals(bo.getBeneficiaryNumber()))
+            {
+                counter = counter.add(amt);
+            }
+            else {
+                counter = counter.subtract(amt);
+            }
+        }
+        return counter;
     }
 }

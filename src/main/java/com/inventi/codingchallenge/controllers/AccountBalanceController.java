@@ -27,12 +27,19 @@ public final class AccountBalanceController {
         {
             toDate = LocalDateTime.parse(to);
         }
-        return bankService.getBankStatementCSV(accounts, fromDate, toDate);
+        String rez = bankService.getBankStatementCSV(accounts, fromDate, toDate);
+        return rez;
     }
 
     @PostMapping(value = "/statements")
     public void postStatement(@RequestBody String csv)
     {
         bankService.insertBankStatement(csv);
+    }
+
+    @GetMapping(value = "/balance/{account}")
+    public String getBalance(@PathVariable String account, @RequestParam(required = true) String date)
+    {
+        return bankService.getBalance(account, LocalDateTime.parse(date)).toString();
     }
 }

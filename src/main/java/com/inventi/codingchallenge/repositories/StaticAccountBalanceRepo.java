@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 public final class StaticAccountBalanceRepo implements IAccountBalanceRepo {
     @Override
     public final void insertBankOperations(ArrayList<BankOperation> bankOperations) {
+        StaticCache.BankOperations.addAll(bankOperations);
     }
 
     @Override
@@ -20,9 +21,13 @@ public final class StaticAccountBalanceRepo implements IAccountBalanceRepo {
         List<BankOperation> list = StaticCache.BankOperations.stream()
                 .filter(
                         x -> (
-                                bankAccounts.contains(x.getAccountNumber()) &&
+                                (bankAccounts.contains(x.getAccountNumber()) &&
+                                        ((from != null && x.getDate().isAfter(from)) || from == null) &&
+                                        ((to != null && x.getDate().isBefore(to)) || to == null) ||
+                                bankAccounts.contains(x.getBeneficiaryNumber()) &&
                                         ((from != null && x.getDate().isAfter(from)) || from == null) &&
                                         ((to != null && x.getDate().isBefore(to)) || to == null)
+                                )
                         )
                 )
                 .collect(Collectors.toList());
