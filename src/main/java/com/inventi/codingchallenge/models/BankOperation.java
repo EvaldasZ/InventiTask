@@ -1,17 +1,25 @@
 package com.inventi.codingchallenge.models;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Formatter;
+import java.util.Locale;
 
 public final class BankOperation {
     private String accountNumber;
     private String beneficiaryNumber;
-    private Date date;
+    private LocalDateTime date;
     private String comment;
     private BigDecimal amount;
     private CurrencyCode currency;
+    public static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public BankOperation(String accountNumber, String beneficiaryNumber, Date date, String comment, BigDecimal amount, CurrencyCode currency) {
+    public BankOperation(String accountNumber, String beneficiaryNumber, LocalDateTime date, String comment, BigDecimal amount, CurrencyCode currency) {
         this.accountNumber = accountNumber;
         this.beneficiaryNumber = beneficiaryNumber;
         this.date = date;
@@ -20,14 +28,20 @@ public final class BankOperation {
         this.currency = currency;
     }
 
-    public String getCSVHeader()
-    {
-        return "";
-    }
-
     public String toCSVRow()
     {
-        return "";
+        String comment = "";
+        if(this.comment != null)
+        {
+            comment = this.comment;
+        }
+        return String.format("%s, %s, %s, %s, %s, %s\n",
+                this.accountNumber,
+                this.beneficiaryNumber,
+                date.format(dateFormatter),
+                comment,
+                new Formatter(Locale.US).format("%.2f", this.amount),
+                this.currency.toString());
     }
 
     public String getAccountNumber() {
@@ -46,11 +60,11 @@ public final class BankOperation {
         this.beneficiaryNumber = beneficiaryNumber;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
